@@ -1,0 +1,10 @@
+{
+    "python.analysis.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/usr/local/python/openpose"
+    ],
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/usr/local/python/openpose"
+    ]
+}
