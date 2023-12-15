@@ -9,7 +9,6 @@ import os
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 yaml_file_path = os.path.join(parent_dir, 'config', 'camera_params.yaml')
-print(yaml_file_path)
 with open(yaml_file_path, 'r') as file:
     config = yaml.safe_load(file)
 
@@ -18,7 +17,7 @@ height = config['resolution']['height']
 fps = config['fps']
 exposure = config['exposure']
 def init_camera():
-    cap = cv2.VideoCapture(-1)
+    cap = cv2.VideoCapture(2)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, height)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, width)
     cap.set(cv2.CAP_PROP_FPS, fps)

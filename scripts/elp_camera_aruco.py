@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import rospy
 import cv2
 import cv2.aruco as aruco
@@ -5,28 +6,43 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose
 import numpy as np
+import yaml
+import numpy as np
+import os
+
+
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+yaml_file_path = os.path.join(parent_dir, 'config', 'camera_params.yaml')
+with open(yaml_file_path, 'r') as file:
+    config = yaml.safe_load(file)
+
+width = config['resolution']['width']
+height = config['resolution']['height']
+fps = config['fps']
+exposure = config['exposure']
 
 def init_camera():
-    cap = cv2.VideoCapture(-1)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
-    cap.set(cv2.CAP_PROP_FPS, 30)
+    cap = cv2.VideoCapture(2)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, height)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, width)
+    cap.set(cv2.CAP_PROP_FPS, fps)
+    cap.set(cv2.CAP_PROP_EXPOSURE, exposure)
     return cap
+
 
 rospy.init_node('camera_stream_publisher')
 
 # Publishers for images and ArUco pose
-image_pub = rospy.Publisher("/camera/image_raw", Image, queue_size=10)
-undistorted_image_pub = rospy.Publisher("/camera/undistorted_image_raw", Image, queue_size=10)
-pose_pub = rospy.Publisher("/camera/aruco_pose", Pose, queue_size=10)
+image_pub = rospy.Publisher(config['camera_topic_name'], Image, queue_size=10)
+undistorted_image_pub = rospy.Publisher(config['undistorted_camera_topic_name'], Image, queue_size=10)
+pose_pub = rospy.Publisher(config['aruco_camera_topic'], Pose, queue_size=10)
 
 bridge = CvBridge()
 
 # Camera matrix (K) and distortion coefficients (D) from calibration
-K = np.array([[229.53214543, 0, 322.49195729],
-              [0, 229.39758169, 228.03407764],
-              [0, 0, 1]])
-D = np.array([[-0.13428436, 0.31066182, -0.35867337, 0.1338705]])
+K = np.array(config['intrinsic_matrix'])
+D = np.array(config['distortion_coefficients'])
 
 # Define ArUco parameters
 aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_1000)
@@ -66,7 +82,7 @@ while not rospy.is_shutdown():
             # ...
             pose_pub.publish(pose_msg)
         aruco.drawDetectedMarkers(frame, corners, ids)
-        # aruco.drawAxis(frame, K, D, rvec, tvec, 0.1)    
+        cv2.drawFrameAxes(frame, K, D, rvec, tvec, 0.1)    
     
     # Publish both original (distorted) and undistorted frames
     image_msg = bridge.cv2_to_imgmsg(frame, encoding="bgr8")

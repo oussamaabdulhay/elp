@@ -2,17 +2,19 @@ resolution:
   width: 640
   height: 480
 
-exposure: -10
+exposure: -5
 fps: 30
 
 intrinsic_matrix:
-  - [229.53214543, 0, 322.49195729]
-  - [0, 229.39758169, 228.03407764]
+  - [228.99490022269657, 0.028540573626283993, 321.29322699548595]
+  - [0.0, 229.2198044862039, 231.14021351602167]
   - [0, 0, 1]
 
 distortion_coefficients:
-  - [-0.13428436, 0.31066182, -0.35867337, 0.1338705]
+  - [-0.046153694634997765, -0.002775586368238786, -0.00014758694674678213, -2.3670811247480544e-05]
 
 camera_topic_name: "/camera/image_raw"
 
 undistorted_camera_topic_name: "/camera/undistorted_image_raw"
+
+aruco_camera_topic: "/camera/aruco_pose"
