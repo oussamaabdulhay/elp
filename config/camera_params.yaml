@@ -12,3 +12,7 @@ intrinsic_matrix:
 
 distortion_coefficients:
   - [-0.13428436, 0.31066182, -0.35867337, 0.1338705]
+
+camera_topic_name: "/camera/image_raw"
+
+undistorted_camera_topic_name: "/camera/undistorted_image_raw"

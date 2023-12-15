@@ -28,8 +28,8 @@ def init_camera():
 rospy.init_node('camera_stream_publisher')
 
 # Publishers for both distorted and undistorted images
-image_pub = rospy.Publisher("/camera/image_raw", Image, queue_size=10)
-undistorted_image_pub = rospy.Publisher("/camera/undistorted_image_raw", Image, queue_size=10)
+image_pub = rospy.Publisher(config['camera_topic_name'], Image, queue_size=10)
+undistorted_image_pub = rospy.Publisher(config['undistorted_camera_topic_name'], Image, queue_size=10)
 
 bridge = CvBridge()
 
